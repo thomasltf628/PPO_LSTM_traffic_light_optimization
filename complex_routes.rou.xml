@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes>
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5" minGap="2.5" maxSpeed="50" guiShape="passenger"/>
+    
+    <!-- Routes for all possible turns -->
+    <route id="N_W" edges="NC CW"/>
+    <route id="N_S" edges="NC CS"/>
+    <route id="N_E" edges="NC CE"/>
+    
+    <route id="S_E" edges="SC CE"/>
+    <route id="S_N" edges="SC CN"/>
+    <route id="S_W" edges="SC CW"/>
+    
+    <route id="E_N" edges="EC CN"/>
+    <route id="E_W" edges="EC CW"/>
+    <route id="E_S" edges="EC CS"/>
+    
+    <route id="W_S" edges="WC CS"/>
+    <route id="W_E" edges="WC CE"/>
+    <route id="W_N" edges="WC CN"/>
+    
+    <!-- Traffic flows -->
+    <flow id="flow_N_W" type="car" route="N_W" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_N_S" type="car" route="N_S" begin="0" end="3600" vehsPerHour="360"/>
+    <flow id="flow_N_E" type="car" route="N_E" begin="0" end="3600" vehsPerHour="180"/>
+    
+    <flow id="flow_S_E" type="car" route="S_E" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_S_N" type="car" route="S_N" begin="0" end="3600" vehsPerHour="360"/>
+    <flow id="flow_S_W" type="car" route="S_W" begin="0" end="3600" vehsPerHour="180"/>
+    
+    <flow id="flow_E_N" type="car" route="E_N" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_E_W" type="car" route="E_W" begin="0" end="3600" vehsPerHour="360"/>
+    <flow id="flow_E_S" type="car" route="E_S" begin="0" end="3600" vehsPerHour="180"/>
+    
+    <flow id="flow_W_S" type="car" route="W_S" begin="0" end="3600" vehsPerHour="180"/>
+    <flow id="flow_W_E" type="car" route="W_E" begin="0" end="3600" vehsPerHour="360"/>
+    <flow id="flow_W_N" type="car" route="W_N" begin="0" end="3600" vehsPerHour="180"/>
+</routes>

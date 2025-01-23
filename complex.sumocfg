@@ -1,0 +1,17 @@
+<configuration>
+    <input>
+        <net-file value="complex_network.net.xml"/>
+        <route-files value="complex_routes.rou.xml"/>
+    </input>
+    
+    <time>
+        <begin value="0"/>
+        <end value="15000"/>
+    </time>
+    
+    <processing>
+        <ignore-junction-blocker value="60"/>
+        <time-to-teleport value="300"/>
+    </processing>
+
+</configuration>
