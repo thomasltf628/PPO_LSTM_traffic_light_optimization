@@ -6,7 +6,7 @@
     
     <time>
         <begin value="0"/>
-        <end value="15000"/>
+        <end value="3600"/>
     </time>
     
     <processing>

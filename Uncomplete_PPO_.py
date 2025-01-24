@@ -11,7 +11,8 @@ import torch.optim as optim
 import matplotlib.pyplot as plt
 
 NUM_OF_LANES = 12
-NUM_OF_FEATURES = 6
+NUM_OF_FEATURES = 5
+STEP_LENGTH = 0.1
 step_to_finish = []
 
 # ---------------------------------------------------------
@@ -22,11 +23,10 @@ class SumoGymEnv(gym.Env):
     A Gym-style environment that simulates interacting with SUMO.
     Now:
       - Action space: 8 discrete actions.
-      - Observation space: shape (7, 12, 5) meaning:
+      - Observation space: shape (7, 12, 6) meaning:
           7 "historical time points"
          12 "lanes"
-          5 "features" per lane
-    In practice, you'd integrate with real SUMO (via traci, etc.).
+          6 "features" per lane
     """
     def __init__(self, sumoCmd, signal_phase_interval=30, sequence_length=7):
         super(SumoGymEnv, self).__init__()
@@ -34,7 +34,7 @@ class SumoGymEnv(gym.Env):
         self.signal_phase_interval = signal_phase_interval
         self.current_step = 0
         self.sumo_cmd = sumoCmd
-        self.max_steps = 180
+        self.max_steps = 103
 
         self.num_lanes = NUM_OF_LANES
         self.num_features = NUM_OF_FEATURES
@@ -96,14 +96,13 @@ class SumoGymEnv(gym.Env):
             e2_detector_id = f"e2_detector_{lane_id}"
             obs[i, 0] = traci.lanearea.getLastStepVehicleNumber(e2_detector_id)  # Vehicle count
             obs[i, 1] = traci.lanearea.getLastStepMeanSpeed(e2_detector_id)  # Mean speed
-            obs[i, 2] = traci.lanearea.getLastStepHaltingNumber(e2_detector_id)  # Queue length
-            obs[i, 3] = traci.lanearea.getLastStepOccupancy(e2_detector_id)  # Lane occupancy
+            obs[i, 2] = traci.lanearea.getLastStepOccupancy(e2_detector_id)  # Lane occupancy
 
             # E1 detector
             e1_detector_id = f"e1_detector_{lane_id}"
             queue_length = self.get_queue_length(e1_detector_id)
-            obs[i, 4] = queue_length  # Queue length near stop line
-            obs[i, 5] = np.mean([
+            obs[i, 3] = queue_length  # Queue length near stop line
+            obs[i, 4] = np.mean([
                 traci.vehicle.getWaitingTime(vehicle_id)
                 for vehicle_id in traci.inductionloop.getLastStepVehicleIDs(e1_detector_id)
             ]) if traci.inductionloop.getLastStepVehicleIDs(e1_detector_id) else 0  # Avg waiting time
@@ -174,13 +173,13 @@ class SumoGymEnv(gym.Env):
         main_phase_duration, main_phase_state = self.main_phases[action]
 
         traci.trafficlight.setRedYellowGreenState("C", main_phase_state)
-        for _ in range(main_phase_duration):  # Assuming 0.1s per step
+        for _ in range(main_phase_duration * int(1/STEP_LENGTH)):  # Assuming 0.1s per step
             traci.simulationStep()
 
         # Apply the transition phase
         transition_phase_duration, transition_phase_state = self.transition_phases[action]
         traci.trafficlight.setRedYellowGreenState("C", transition_phase_state)
-        for _ in range(transition_phase_duration):  # Assuming 0.1s per step
+        for _ in range(transition_phase_duration  * int(1/STEP_LENGTH)):  # Assuming 0.1s per step
             traci.simulationStep()
         
         # Gather observation
@@ -190,7 +189,7 @@ class SumoGymEnv(gym.Env):
         # Average speed as reward
         reward = self.calculate_reward()
 
-        # Done if we exceed an hour
+        # Done if we exceed 3600
         done = self.current_step >= self.max_steps or traci.simulation.getMinExpectedNumber() == 0
         if done:
             step_to_finish.append(self.current_step)
@@ -552,7 +551,7 @@ class PPO_LSTM_Agent:
 # ------------------------------------------------------------------
 def main():
     # Example hyperparams
-    NUM_EPOCHS = 200
+    NUM_EPOCHS = 400
     BATCH_SIZE = 32
     LSTM_UNITS = 64
     FC_DIMS = [200, 8]
@@ -564,10 +563,11 @@ def main():
     LR    = 0.0005
     CLIP_EPS = 0.2
     rolling_window = 10
-    satisfactory_reward = 7.0
+    satisfactory_reward_rolling = 8.6
+    satisfactory_reward_one_time = 9.5
 
-    sumoCmd = ["sumo",  "-c", r"C:\Users\super\traffic_simulation_v2\complex.sumocfg", "--verbose", "--no-warnings"]
-    #sumoCmd = ["sumo-gui", "--start", "--quit-on-end",  "-c", r"C:\Users\super\traffic_simulation_v2\complex.sumocfg"]
+    sumoCmd = ["sumo",  "-c", r"C:\Users\super\traffic_simulation_v2\complex.sumocfg", "--verbose", "--no-warnings", "--step-length", f"{STEP_LENGTH}"]
+    #sumoCmd = ["sumo-gui", "--start", "--quit-on-end",  "-c", r"C:\Users\super\traffic_simulation_v2\complex.sumocfg", "--step-length", f"{STEP_LENGTH}"]
     # Suppose you define your environment with 8 discrete actions,
     # obs shape = (7,12,5). For brevity, assume it's named 'env' here.
     # from your_sumo_env_module import SumoGymEnv
@@ -618,7 +618,7 @@ def main():
             print(rolling_avg_rewards)
 
             # Check for early stopping
-            if rolling_avg >= satisfactory_reward:
+            if rolling_avg >= satisfactory_reward_rolling or avg_reward_per_step >= satisfactory_reward_one_time:
                 print(f"Early stopping at epoch {epoch + 1}. Rolling avg reward: {rolling_avg:.2f}")
                 break
 

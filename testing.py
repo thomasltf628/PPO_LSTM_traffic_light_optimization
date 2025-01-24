@@ -6,28 +6,45 @@ import sumolib
 SUMO_BINARY = "sumo"  # Use "sumo-gui" for GUI simulation
 SUMO_CONFIG = r"C:\Users\super\traffic_simulation_v2\complex.sumocfg"  # Path to your SUMO config file
 
+def calculate_reward():
+    """
+    Calculate the reward as the average speed of all vehicles in the road network.
+
+    Returns:
+        float: The average speed of all vehicles.
+    """
+    # Get the list of all vehicle IDs in the simulation
+    vehicle_ids = traci.vehicle.getIDList()
+
+    # If there are no vehicles, return a reward of 0
+    if len(vehicle_ids) == 0:
+        return 0.0
+
+    # Calculate the total speed of all vehicles
+    total_speed = sum(traci.vehicle.getSpeed(vehicle_id) for vehicle_id in vehicle_ids)
+
+    # Calculate the average speed
+    avg_speed = total_speed / len(vehicle_ids)
+
+    return avg_speed
+
 def run_simulation():
     """Run a basic SUMO simulation."""
     # Start SUMO with the given config
     traci.start([SUMO_BINARY, "-c", SUMO_CONFIG])
 
-    step = 0
-    try:
-        while step < 1000:  # Run for 1000 simulation steps
-            traci.simulationStep()  # Advance the simulation
-            print(f"Step {step}:")
-            lane_id = "NC_0"
-            e1_detector_id = f"e1_detector_{lane_id}"
-            # Example: Retrieve vehicle information
-            vehicles = traci.inductionloop.getLastStepVehicleIDs(e1_detector_id)
-            print(f"  Number of vehicles: {len(vehicles)}")
-            for veh_id in vehicles:
-                speed = traci.vehicle.getSpeed(veh_id)
-                position = traci.vehicle.getPosition(veh_id)
-                print(f"    Vehicle {veh_id} -> Speed: {speed:.2f}, Position: {position}")
-            
-            step += 1
+    steps = 0
+    total_reward = 0
 
+    try:
+        while steps < 3600 and traci.simulation.getMinExpectedNumber() > 0:  # Run for 1000 simulation steps
+            traci.simulationStep()  # Advance the simulation
+            print(f"Step {steps}:")
+            reward = calculate_reward()
+            total_reward += reward
+            steps += 1
+        avg_reward_per_step = total_reward / steps if steps > 0 else 0
+        print(avg_reward_per_step)
     except Exception as e:
         print(f"Error during simulation: {e}")
 
