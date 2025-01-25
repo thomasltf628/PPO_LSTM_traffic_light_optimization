@@ -557,14 +557,14 @@ def main():
     FC_DIMS = [200, 8]
     MAX_MEMORY_CAPACITY = 1200
     SAMPLED_TRAINING_SAMPLES = 300
-    NUM_ITERATIONS_TRAINING = 10   # for demonstration
+    NUM_ITERATIONS_TRAINING = 13   # for demonstration
     GAMMA = 0.99
     LAM   = 0.95
     LR    = 0.0005
     CLIP_EPS = 0.2
     rolling_window = 10
-    satisfactory_reward_rolling = 8.6
-    satisfactory_reward_one_time = 9.5
+    satisfactory_reward_rolling = 9.0
+    satisfactory_reward_one_time = 9.4
 
     sumoCmd = ["sumo",  "-c", r"C:\Users\super\traffic_simulation_v2\complex.sumocfg", "--verbose", "--no-warnings", "--step-length", f"{STEP_LENGTH}"]
     #sumoCmd = ["sumo-gui", "--start", "--quit-on-end",  "-c", r"C:\Users\super\traffic_simulation_v2\complex.sumocfg", "--step-length", f"{STEP_LENGTH}"]
@@ -619,14 +619,13 @@ def main():
 
             # Check for early stopping
             if rolling_avg >= satisfactory_reward_rolling or avg_reward_per_step >= satisfactory_reward_one_time:
-                print(f"Early stopping at epoch {epoch + 1}. Rolling avg reward: {rolling_avg:.2f}")
+                print(f"Early stopping at epoch {epoch + 1}. Rolling avg reward: {rolling_avg:.2f}. Average speed last episode: {avg_reward_per_step:.2f}")
                 break
 
             # After each episode, update PPO
             agent.update()
 
-            if (epoch+1) % 10 == 0:
-                print(f"[Epoch {epoch+1}/{NUM_EPOCHS}] Update done.")
+            print(f"[Epoch {epoch+1}/{NUM_EPOCHS}] Update done.")
         except Exception as e:
             print(e)
             continue
