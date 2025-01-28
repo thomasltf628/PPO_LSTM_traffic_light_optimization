@@ -551,7 +551,7 @@ class PPO_LSTM_Agent:
 # ------------------------------------------------------------------
 def main():
     # Example hyperparams
-    NUM_EPOCHS = 400
+    NUM_EPOCHS = 700
     BATCH_SIZE = 32
     LSTM_UNITS = 64
     FC_DIMS = [200, 8]
@@ -562,9 +562,9 @@ def main():
     LAM   = 0.95
     LR    = 0.0005
     CLIP_EPS = 0.2
-    rolling_window = 10
-    satisfactory_reward_rolling = 9.0
-    satisfactory_reward_one_time = 9.4
+    rolling_window = 4
+    satisfactory_reward_rolling = 9.35
+    satisfactory_reward_one_time = 9.7
 
     sumoCmd = ["sumo",  "-c", r"C:\Users\super\traffic_simulation_v2\complex.sumocfg", "--verbose", "--no-warnings", "--step-length", f"{STEP_LENGTH}"]
     #sumoCmd = ["sumo-gui", "--start", "--quit-on-end",  "-c", r"C:\Users\super\traffic_simulation_v2\complex.sumocfg", "--step-length", f"{STEP_LENGTH}"]
