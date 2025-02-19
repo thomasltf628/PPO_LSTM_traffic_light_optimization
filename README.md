@@ -83,6 +83,32 @@ The primary performance metric is the **average speed of vehicles** across episo
 
 ---
 
+# File Overview
+
+This section describes the function of each file in the repository:
+
+### **Python Script**
+- **`LSTM_PPO_training_script.py`**:  
+  - This script contains the **environment**, **agent**, and **neural network** definition.
+  - It implements the **PPO-LSTM training process** and interacts with the SUMO simulation.
+
+### **SUMO Configuration**
+- **`complex.sumocfg`**:  
+  - This is the main **configuration file** that runs the SUMO traffic simulation.
+  - It references other network files to define the simulation setup.
+
+### **Traffic Network XML Files**
+These `.xml` files define the traffic network used in the SUMO simulation:
+
+- **`complex_connections.con.xml`**: Defines the connections between different road segments.  
+- **`complex_edges.edg.xml`**: Specifies the edges (roads) in the traffic network.  
+- **`complex_network.net.xml`**: The compiled SUMO network file, generated from other XML files.  
+- **`complex_nodes.nod.xml`**: Defines the nodes (junctions/intersections) in the network.  
+- **`complex_routes.rou.xml`**: Specifies vehicle routes, defining how vehicles move through the network.  
+- **`complex_tllogic.tll.xml`**: Defines the **traffic light logic**, including the different phases and timing configurations.  
+
+---
+
 # Future Improvements
 
 🔹 **Hybrid RL Approach**: Combine PPO with rule-based heuristics to improve stability.  
