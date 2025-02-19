@@ -51,7 +51,7 @@ The primary performance metric is the **average speed of vehicles** across episo
 - Helps smooth fluctuations in performance.
 - Indicates when the model stabilizes.
 
-![Rolling Average Reward](Reward result plot/reward_400_ecoph_3600_steps_stop_at_881_step_speed_911_roll.png)
+![Rolling Average Reward](images/reward_400_ecoph_3600_steps_stop_at_881_step_speed_911_roll.png)
 
 ---
 
