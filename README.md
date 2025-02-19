@@ -47,29 +47,11 @@ The primary performance metric is the **average speed of vehicles** across episo
 
 ---
 
-# Visualization
-
-To present results effectively, we include:
-
-## **1. Training Progress Graph**
-- **X-axis**: Episodes  
-- **Y-axis**: Average reward (speed)  
-- Shows how the RL agent improves over time.
-
-![Training Progress](images/training_progress.png)
-
-## **2. Rolling Average Reward**
+# Visualization of Rolling Average Reward**
 - Helps smooth fluctuations in performance.
 - Indicates when the model stabilizes.
 
-![Rolling Average Reward](images/rolling_avg_reward.png)
-
-## **3. Steps to Completion**
-- **X-axis**: Episodes  
-- **Y-axis**: Number of simulation steps required to complete an episode.  
-- Helps visualize whether traffic control efficiency improves.
-
-![Steps to Completion](images/steps_to_completion.png)
+![Rolling Average Reward](Reward result plot/reward_400_ecoph_3600_steps_stop_at_881_step_speed_911_roll.png)
 
 ---
 
