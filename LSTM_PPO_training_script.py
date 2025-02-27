@@ -284,7 +284,6 @@ class LSTMCritic(nn.Module):
 
 # ------------------------------------------------------------------
 # 4) PPO-LSTM Agent with Actor-Old / Actor-New
-#    Now we incorporate the equations from your text:
 #     - RL target (Eq. (1))
 #     - Policy Gradient Update (Eq. (2), (3))
 #     - Advantage function (Eq. (4))
