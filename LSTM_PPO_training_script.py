@@ -23,10 +23,10 @@ class SumoGymEnv(gym.Env):
     A Gym-style environment that simulates interacting with SUMO.
     Now:
       - Action space: 8 discrete actions.
-      - Observation space: shape (7, 12, 6) meaning:
+      - Observation space: shape (7, 12, 5) meaning:
           7 "historical time points"
          12 "lanes"
-          6 "features" per lane
+          5 "features" per lane
     """
     def __init__(self, sumoCmd, signal_phase_interval=30, sequence_length=7):
         super(SumoGymEnv, self).__init__()
@@ -162,7 +162,7 @@ class SumoGymEnv(gym.Env):
         then advances the simulation by 'signal_phase_interval' seconds.
 
         Returns:
-            - next_state: shape (7, 12, 6)
+            - next_state: shape (7, 12, 5)
             - reward: float
             - done: bool
             - info: dict
@@ -304,11 +304,7 @@ class PPO_LSTM_Agent:
         lam=0.95,
         clip_epsilon=0.2,
     ):
-        """
-        We'll keep separate 'Actor-New' and 'Actor-Old' as per the paper.
-        We'll do the same for the Critic, though in some PPO variants,
-        you can keep just one critic (Actor-Old & Actor-New share it).
-        """
+        
         self.action_dim = 8
         self.batch_size = batch_size
         self.ppo_epochs = ppo_epochs
