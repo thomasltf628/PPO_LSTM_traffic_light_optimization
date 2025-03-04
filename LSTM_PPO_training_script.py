@@ -311,6 +311,7 @@ class PPO_LSTM_Agent:
         self.gamma = gamma        # discount
         self.lam = lam            # GAE-lambda (not fully shown, but could incorporate)
         self.clip_epsilon = clip_epsilon
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Build Actor-New and Actor-Old
         self.actor_new = LSTMActor(
@@ -369,7 +370,7 @@ class PPO_LSTM_Agent:
 
     def _preprocess_state(self, state):
         """ 
-        Flatten from (7, 12, 6) → (7, 72).
+        Flatten from (7, 12, 5) → (7, 60).
         """
         if state is None:
             print("Warning: Received None state. Filling with random numbers for debugging.")
@@ -448,11 +449,11 @@ class PPO_LSTM_Agent:
             next_states.append(self._preprocess_state(s_next))
             dones.append(float(d))
 
-        states_t      = torch.FloatTensor(states)      # (sample_size, 7, 60)
-        actions_t     = torch.LongTensor(actions)      # (sample_size,)
-        rewards_t     = torch.FloatTensor(rewards)     # (sample_size,)
-        next_states_t = torch.FloatTensor(next_states) # (sample_size, 7, 60)
-        dones_t       = torch.FloatTensor(dones)       # (sample_size,)
+        states_t      = torch.tensor(states, dtype=torch.float32, device = self.device)      # (sample_size, 7, 60)
+        actions_t     = torch.tensor(actions, dtype=torch.long, device=self.device)      # (sample_size,)
+        rewards_t     = torch.tensor(rewards, dtype=torch.float32, device = self.device)     # (sample_size,)
+        next_states_t = torch.tensor(next_states, dtype=torch.float32, device = self.device) # (sample_size, 7, 60)
+        dones_t       = torch.tensor(dones, dtype=torch.float32, device=self.device)       # (sample_size,)
 
         # 2) We'll split into mini-batches for multiple PPO epochs
         num_batches = self.sample_size // self.batch_size
