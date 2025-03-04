@@ -134,3 +134,7 @@ The techniques used in this project could be applied to:
 This project successfully demonstrates the use of **reinforcement learning (PPO-LSTM) for traffic light optimization**. Through SUMO simulation and PPO training, the model effectively learns policies to improve traffic flow, with key improvements in **average vehicle speed and congestion reduction**.
 
 Future work will focus on **multi-agent coordination and real-world deployment** to maximize impact.
+
+# PPO-LSTM work flow
+
+![Flow chart](images/flow_chart_PNG.png)
