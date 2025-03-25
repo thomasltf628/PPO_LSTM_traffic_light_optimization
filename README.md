@@ -47,7 +47,7 @@ The primary performance metric is the **average speed of vehicles** across episo
 
 ---
 
-# Visualization of Rolling Average Reward**
+# Visualization of Rolling Average Reward
 - Helps smooth fluctuations in performance.
 - Indicates when the model stabilizes.
 
